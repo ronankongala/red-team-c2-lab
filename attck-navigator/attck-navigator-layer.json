@@ -1,0 +1,148 @@
+{
+  "name": "CASE-26: Red Team C2 Lab -- Sliver Adversary Emulation",
+  "versions": {
+    "attack": "15",
+    "navigator": "4.9",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "MITRE ATT&CK techniques executed in the CASE-26 Sliver C2 adversary emulation lab against a Windows 11 Enterprise victim. Attacker: REMnux (192.168.93.137). Victim: Windows 11 Enterprise eval. C2: Sliver v1.7.7 HTTPS beacon.",
+  "filters": {
+    "platforms": [
+      "Windows"
+    ]
+  },
+  "sorting": 0,
+  "layout": {
+    "layout": "side",
+    "aggregateFunction": "average",
+    "showID": true,
+    "showName": true,
+    "showAggregateScores": false,
+    "countUnscored": false,
+    "expandedSubtechniques": "annotated"
+  },
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1204.002",
+      "tactic": "execution",
+      "color": "#e60d0d",
+      "comment": "Victim executed CASE26-beacon.exe transferred from REMnux via HTTP/SMB. Sliver beacon compiled for windows/amd64 with symbol obfuscation enabled (4m11s build time).",
+      "enabled": true,
+      "metadata": [
+        { "name": "Tool", "value": "Sliver C2 v1.7.7" },
+        { "name": "Artifact", "value": "CASE26-beacon.exe" }
+      ],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1071.001",
+      "tactic": "command-and-control",
+      "color": "#e60d0d",
+      "comment": "Sliver beacon established HTTPS C2 channel to REMnux listener on port 443 (192.168.93.137:443). Beacon interval 1m0s with jitter. Traffic encrypted with mTLS over HTTPS.",
+      "enabled": true,
+      "metadata": [
+        { "name": "Listener", "value": "HTTPS :443 on 192.168.93.137" },
+        { "name": "Job", "value": "Sliver job #1" },
+        { "name": "Beacon interval", "value": "60s" }
+      ],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1547.001",
+      "tactic": "persistence",
+      "color": "#e60d0d",
+      "comment": "Beacon payload added to HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run to maintain persistence across reboots. No elevated privileges required for HKCU key.",
+      "enabled": true,
+      "metadata": [
+        { "name": "Registry key", "value": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" },
+        { "name": "ATT&CK", "value": "T1547.001 Boot or Logon Autostart Execution: Registry Run Keys" }
+      ],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1134.001",
+      "tactic": "privilege-escalation",
+      "color": "#e60d0d",
+      "comment": "Token impersonation used to escalate from standard user to SYSTEM context. Sliver getsystem command used for token theft via named pipe impersonation.",
+      "enabled": true,
+      "metadata": [
+        { "name": "Method", "value": "Token impersonation via Sliver getsystem" },
+        { "name": "Result", "value": "SYSTEM context achieved" }
+      ],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1003.001",
+      "tactic": "credential-access",
+      "color": "#e60d0d",
+      "comment": "Mimikatz sekurlsa::logonpasswords executed against lsass.exe from SYSTEM context to dump plaintext credentials and NTLM hashes from memory.",
+      "enabled": true,
+      "metadata": [
+        { "name": "Tool", "value": "Mimikatz" },
+        { "name": "Command", "value": "sekurlsa::logonpasswords" },
+        { "name": "Target", "value": "lsass.exe" }
+      ],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1550.002",
+      "tactic": "lateral-movement",
+      "color": "#e60d0d",
+      "comment": "NTLM hash from Mimikatz dump used in pass-the-hash attack to authenticate to remote services without plaintext credentials.",
+      "enabled": true,
+      "metadata": [
+        { "name": "Method", "value": "Pass-the-hash with captured NTLM hash" },
+        { "name": "ATT&CK", "value": "T1550.002 Use Alternate Authentication Material: Pass the Hash" }
+      ],
+      "links": [],
+      "showSubtechniques": true
+    },
+    {
+      "techniqueID": "T1041",
+      "tactic": "exfiltration",
+      "color": "#e60d0d",
+      "comment": "Simulated exfiltration of staged sensitive files (credentials.txt, network-topology.txt) back to REMnux C2 server via existing HTTPS beacon channel.",
+      "enabled": true,
+      "metadata": [
+        { "name": "Method", "value": "Sliver download command over HTTPS C2 channel" },
+        { "name": "Target files", "value": "Simulated sensitive documents" }
+      ],
+      "links": [],
+      "showSubtechniques": false
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#ffffff",
+      "#e60d0d"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legendItems": [
+    {
+      "color": "#e60d0d",
+      "label": "Executed in CASE-26 lab"
+    }
+  ],
+  "metadata": [
+    { "name": "Project", "value": "CASE-26: Red Team C2 Lab" },
+    { "name": "Attacker", "value": "REMnux 192.168.93.137" },
+    { "name": "Victim", "value": "Windows 11 Enterprise (eval)" },
+    { "name": "C2 Framework", "value": "Sliver v1.7.7" },
+    { "name": "Date", "value": "2026-09-17" }
+  ],
+  "links": [],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#1f4e79",
+  "selectTechniquesAcrossTactics": true,
+  "selectSubtechniquesWithParent": false,
+  "selectVisibleTechniques": false
+}
