@@ -16,12 +16,12 @@
 This report documents a full-chain adversary emulation exercise performed against a Windows 11 Enterprise target in an isolated lab environment. The assessment simulated a threat actor who obtained initial access and progressed through persistence, privilege escalation, credential dumping, lateral movement, and exfiltration using the Sliver C2 framework.
 
 **Techniques executed:** 7 MITRE ATT&CK techniques across 6 tactics  
-**Credentials obtained:** [FILL -- e.g., 2 NTLM hashes, 1 plaintext password]  
+**Credentials obtained:** [FILL: e.g., 2 NTLM hashes, 1 plaintext password]  
 **Persistence mechanisms established:** 1 (registry run key)  
 **Privilege level achieved:** SYSTEM  
 **Detection rules authored:** 3 Sigma rules  
 
-**Key finding:** A single HTTPS beacon executed with standard user privileges was sufficient to achieve SYSTEM context, dump credentials, and simulate data exfiltration -- all over a single encrypted C2 channel that blends with normal HTTPS traffic.
+**Key finding:** A single HTTPS beacon executed with standard user privileges was sufficient to achieve SYSTEM context, dump credentials, and simulate data exfiltration. Every stage ran over one encrypted C2 channel that blends in with normal HTTPS traffic.
 
 ---
 
@@ -32,7 +32,7 @@ This report documents a full-chain adversary emulation exercise performed agains
 | Scope | Single Windows 11 Enterprise VM on isolated VMware NAT subnet |
 | Out of scope | Host machine, internet, production systems |
 | Network | 192.168.93.x VMware NAT only |
-| Authorization | Self-authorized lab environment -- no production systems affected |
+| Authorization | Self-authorized lab environment; no production systems affected |
 | Constraints | No destructive payloads; no real credential exfiltration beyond VM boundary |
 | Objectives | Execute full kill chain, document 7+ ATT&CK techniques, author detection rules |
 
@@ -40,49 +40,49 @@ This report documents a full-chain adversary emulation exercise performed agains
 
 ## 3. Attack Narrative
 
-### Phase 1 -- Initial Access and C2 Establishment
+### Phase 1: Initial Access and C2 Establishment
 
-**Technique:** T1204.002 -- User Execution: Malicious File  
-**Technique:** T1071.001 -- Application Layer Protocol: Web Protocols  
+**Technique:** T1204.002: User Execution: Malicious File  
+**Technique:** T1071.001: Application Layer Protocol: Web Protocols  
 
 The attacker compiled a Sliver HTTPS beacon (`CASE26-beacon.exe`) on REMnux using the Sliver C2 server running as a systemd service on port 443. The beacon used symbol obfuscation and compiled in 4m11s for the windows/amd64 target architecture.
 
-The beacon was transferred to the victim machine via [FILL -- HTTP/SMB/RDP file copy]. Upon execution by the victim user, the beacon established an encrypted HTTPS callback to the REMnux listener (192.168.93.137:443) with a 60-second beacon interval.
+The beacon was transferred to the victim machine via [FILL: HTTP/SMB/RDP file copy]. Upon execution by the victim user, the beacon established an encrypted HTTPS callback to the REMnux listener (192.168.93.137:443) with a 60-second beacon interval.
 
 **Evidence:**
 - Sliver console: `[*] Beacon CASE26-beacon ([FILL session ID]) -- [FILL victim IP]`
 - Sysmon EventID 3: outbound connection from [beacon process] to 192.168.93.137:443
-- Screenshot: [FILL -- 04_beacon_connecting.png]
+- Screenshot: [FILL: 04_beacon_connecting.png]
 
 ---
 
-### Phase 2 -- Persistence
+### Phase 2: Persistence
 
-**Technique:** T1547.001 -- Boot or Logon Autostart Execution: Registry Run Keys  
+**Technique:** T1547.001: Boot or Logon Autostart Execution: Registry Run Keys  
 
 From the active Sliver beacon session, a registry run key was written to maintain persistence across reboots without elevated privileges.
 
 **Command executed:**
 ```
-[FILL -- Sliver registry command or shell command used]
+[FILL: Sliver registry command or shell command used]
 ```
 
 **Registry artifact:**
 ```
 HKCU\Software\Microsoft\Windows\CurrentVersion\Run
 Value: [FILL]
-Data: [FILL -- path to beacon executable]
+Data: [FILL: path to beacon executable]
 ```
 
 **Evidence:**
 - Sysmon EventID 13: registry value set on target key
-- Screenshot: [FILL -- 05_persistence_registry.png]
+- Screenshot: [FILL: 05_persistence_registry.png]
 
 ---
 
-### Phase 3 -- Privilege Escalation
+### Phase 3: Privilege Escalation
 
-**Technique:** T1134.001 -- Access Token Manipulation: Token Impersonation/Theft  
+**Technique:** T1134.001: Access Token Manipulation: Token Impersonation/Theft  
 
 With an established beacon session, privilege escalation was performed using Sliver's built-in `getsystem` command, which uses named pipe impersonation to steal a SYSTEM token.
 
@@ -91,66 +91,66 @@ With an established beacon session, privilege escalation was performed using Sli
 getsystem
 ```
 
-**Result:** [FILL -- e.g., "Elevated to NT AUTHORITY\SYSTEM"]
+**Result:** [FILL: e.g., "Elevated to NT AUTHORITY\SYSTEM"]
 
 **Evidence:**
 - Sliver console output showing SYSTEM context
-- Screenshot: [FILL -- 06_privesc_system.png]
+- Screenshot: [FILL: 06_privesc_system.png]
 
 ---
 
-### Phase 4 -- Credential Dumping
+### Phase 4: Credential Dumping
 
-**Technique:** T1003.001 -- OS Credential Dumping: LSASS Memory  
+**Technique:** T1003.001: OS Credential Dumping: LSASS Memory  
 
 From SYSTEM context, Mimikatz was executed to dump credentials from LSASS memory.
 
 **Commands executed:**
 ```
-[FILL -- method of delivering mimikatz: execute-assembly, shell, etc.]
+[FILL: method of delivering mimikatz: execute-assembly, shell, etc.]
 sekurlsa::logonpasswords
 ```
 
 **Credentials obtained:**
 | Account | Type | Hash/Password |
 |---|---|---|
-| [FILL] | NTLM | [FILL -- redact in public repo] |
-| [FILL] | Plaintext | [FILL -- redact in public repo] |
+| [FILL] | NTLM | [FILL: redact in public repo] |
+| [FILL] | Plaintext | [FILL: redact in public repo] |
 
 **Evidence:**
 - Mimikatz output showing credential dump
 - Sysmon EventID 10: process access to lsass.exe with GrantedAccess 0x1010
-- Screenshot: [FILL -- 07_mimikatz_dump.png]
+- Screenshot: [FILL: 07_mimikatz_dump.png]
 
 ---
 
-### Phase 5 -- Lateral Movement
+### Phase 5: Lateral Movement
 
-**Technique:** T1550.002 -- Use Alternate Authentication Material: Pass the Hash  
+**Technique:** T1550.002: Use Alternate Authentication Material: Pass the Hash  
 
 The NTLM hash obtained from the credential dump was used to authenticate to a remote service on the victim without requiring the plaintext password.
 
 **Command executed:**
 ```
-[FILL -- pth command used, tool, target]
+[FILL: pth command used, tool, target]
 ```
 
-**Result:** [FILL -- e.g., "Authenticated to \\victim\C$ as [user] via PtH"]
+**Result:** [FILL: e.g., "Authenticated to \\victim\C$ as [user] via PtH"]
 
 **Evidence:**
-- Screenshot: [FILL -- 08_pass_the_hash.png]
+- Screenshot: [FILL: 08_pass_the_hash.png]
 
 ---
 
-### Phase 6 -- Exfiltration Simulation
+### Phase 6: Exfiltration Simulation
 
-**Technique:** T1041 -- Exfiltration Over C2 Channel  
+**Technique:** T1041: Exfiltration Over C2 Channel  
 
 Simulated sensitive files (staged on the victim for demonstration purposes) were transferred back to the REMnux C2 server over the existing Sliver HTTPS beacon channel.
 
 **Files exfiltrated (simulated):**
-- `credentials.txt` -- simulated credential store
-- `network-topology.txt` -- simulated internal network map
+- `credentials.txt`: simulated credential store
+- `network-topology.txt`: simulated internal network map
 
 **Command executed:**
 ```
@@ -160,7 +160,7 @@ download C:\Users\[user]\Documents\credentials.txt
 **Evidence:**
 - Sliver download confirmation
 - File received on REMnux at /tmp/
-- Screenshot: [FILL -- 09_exfiltration.png]
+- Screenshot: [FILL: 09_exfiltration.png]
 
 ---
 
@@ -194,17 +194,17 @@ download C:\Users\[user]\Documents\credentials.txt
 
 | Detection | Method |
 |---|---|
-| C2 beacon timing regularity | Network flow analysis -- low-variance intervals to single IP on 443 |
-| HTTPS to non-CDN IP on 443 | DNS + SSL cert inspection -- Sliver uses self-signed cert |
+| C2 beacon timing regularity | Network flow analysis; low-variance intervals to single IP on 443 |
+| HTTPS to non-CDN IP on 443 | DNS + SSL cert inspection; Sliver uses self-signed cert |
 | Large outbound transfers during off-hours | DLP / NetFlow anomaly detection |
 
 ### Recommended Controls
 
-1. **EDR tuning** -- Alert on any process accessing lsass.exe that is not in the approved security product allowlist
-2. **AppLocker / WDAC** -- Block execution of unsigned binaries from user-writable paths
-3. **Credential Guard** -- Enable to prevent LSASS credential dumping even with SYSTEM access
-4. **Network segmentation** -- Limit workstation-to-workstation traffic to prevent lateral movement
-5. **SSL inspection** -- Inspect HTTPS traffic at the proxy layer to detect self-signed C2 certificates
+1. **EDR tuning**: Alert on any process accessing lsass.exe that is not in the approved security product allowlist
+2. **AppLocker / WDAC**: Block execution of unsigned binaries from user-writable paths
+3. **Credential Guard**: Enable to prevent LSASS credential dumping even with SYSTEM access
+4. **Network segmentation**: Limit workstation-to-workstation traffic to prevent lateral movement
+5. **SSL inspection**: Inspect HTTPS traffic at the proxy layer to detect self-signed C2 certificates
 
 ---
 
@@ -220,7 +220,7 @@ Tactics covered: Execution, Command and Control, Persistence, Privilege Escalati
 
 ## 7. Conclusion
 
-The lab demonstrated that a single HTTPS beacon -- indistinguishable from normal web traffic at the packet level -- can serve as a complete attack platform from initial access through data exfiltration. Standard perimeter controls (firewall, AV signature scanning) did not prevent any stage of the kill chain. Detection required behavioral rules (EDR process access monitoring, network flow timing analysis) rather than signature-based defenses.
+The lab demonstrated that a single HTTPS beacon, indistinguishable from normal web traffic at the packet level, can serve as a complete attack platform from initial access through data exfiltration. Standard perimeter controls (firewall, AV signature scanning) did not prevent any stage of the kill chain. Detection required behavioral rules (EDR process access monitoring, network flow timing analysis) rather than signature-based defenses.
 
 All activity was performed in an isolated lab environment with no production systems, real credentials, or internet connectivity involved.
 

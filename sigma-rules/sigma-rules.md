@@ -5,7 +5,7 @@ Tools: Sysmon (EventIDs 3, 10, 13) on Windows 11 Enterprise victim.
 
 ---
 
-## Rule 1 -- Sliver C2 HTTPS Beacon Pattern (T1071.001)
+## Rule 1: Sliver C2 HTTPS Beacon Pattern (T1071.001)
 
 ```yaml
 title: Sliver C2 HTTPS Beacon -- Periodic Connection to Single External Host
@@ -58,7 +58,7 @@ tags:
 
 ---
 
-## Rule 2 -- Registry Run Key Persistence (T1547.001)
+## Rule 2: Registry Run Key Persistence (T1547.001)
 
 ```yaml
 title: Suspicious Registry Run Key Modification -- Persistence via Autostart
@@ -106,7 +106,7 @@ tags:
 
 ---
 
-## Rule 3 -- LSASS Memory Access for Credential Dumping (T1003.001)
+## Rule 3: LSASS Memory Access for Credential Dumping (T1003.001)
 
 ```yaml
 title: Unauthorized Process Access to LSASS -- Credential Dumping Indicator

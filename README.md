@@ -56,7 +56,7 @@ Built as part of a cybersecurity portfolio targeting offensive security roles. D
 | pypykatz | 0.6.13 | Offline SAM hive parsing and NTLM hash extraction |
 | impacket | 0.13.1 | Pass-the-hash SMB authentication |
 | REMnux | Ubuntu 24.04 LTS | Attacker platform |
-| VMware Workstation | -- | Lab virtualization, NAT networking |
+| VMware Workstation | n/a | Lab virtualization, NAT networking |
 | Windows 11 Enterprise | Build 26100 (90-day eval) | Victim platform |
 
 ---
@@ -75,9 +75,9 @@ Built as part of a cybersecurity portfolio targeting offensive security roles. D
 
 Three Sigma rules in `sigma-rules/` targeting:
 
-1. **C2 HTTPS Beacon** -- periodic HTTPS connections from non-browser processes (T1071.001)
-2. **Registry Run Key Persistence** -- writes to CurrentVersion\Run by non-standard images (T1547.001)
-3. **LSASS Memory Access** -- PROCESS_VM_READ access to lsass.exe by unauthorized processes (T1003.001)
+1. **C2 HTTPS Beacon**: periodic HTTPS connections from non-browser processes (T1071.001)
+2. **Registry Run Key Persistence**: writes to CurrentVersion\Run by non-standard images (T1547.001)
+3. **LSASS Memory Access**: PROCESS_VM_READ access to lsass.exe by unauthorized processes (T1003.001)
 
 See `sigma-rules/sigma-rules.md` for full YAML rule definitions and validation notes.
 
@@ -159,7 +159,7 @@ This lab runs in an isolated VMware NAT environment. No internet-facing systems,
 
 **Victim setup:** Windows 11 Enterprise 90-day eval ISO from Microsoft Evaluation Center
 
-**Network:** VMware NAT -- both VMs on the same 192.168.93.x subnet with no external routing
+**Network:** VMware NAT, with both VMs on the same 192.168.93.x subnet with no external routing
 
 ---
 
