@@ -1,4 +1,4 @@
-# Red Team C2 Lab (CASE-26)
+# Red Team C2 Lab (CASE-24)
 
 Adversary emulation lab simulating a full attack chain from initial access through credential dumping, lateral movement, and exfiltration using Sliver C2 against a Windows 11 Enterprise victim. 7 MITRE ATT&CK techniques executed and documented. 3 Sigma detection rules authored against own activity.
 
@@ -38,7 +38,7 @@ Built as part of a cybersecurity portfolio targeting offensive security roles. D
 
 | # | ATT&CK ID | Technique | Tool | Result |
 |---|---|---|---|---|
-| 1 | T1204.002 | User Execution: Malicious File | Sliver beacon | case26-beacon.exe executed on victim desktop |
+| 1 | T1204.002 | User Execution: Malicious File | Sliver beacon | case24-beacon.exe executed on victim desktop |
 | 2 | T1071.001 | Application Layer Protocol: Web Protocols | Sliver C2 | HTTPS C2 channel established on port 443, 60s beacon interval |
 | 3 | T1547.001 | Boot or Logon Autostart Execution: Registry Run Keys | Sliver registry write | Updater key written to HKCU\Software\Microsoft\Windows\CurrentVersion\Run |
 | 4 | T1134.001 | Access Token Manipulation: Token Impersonation | Sliver getsystem | SeImpersonatePrivilege confirmed enabled, Spooler running |

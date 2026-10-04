@@ -1,12 +1,12 @@
 {
-  "name": "CASE-26: Red Team C2 Lab -- Sliver Adversary Emulation",
+  "name": "CASE-24: Red Team C2 Lab -- Sliver Adversary Emulation",
   "versions": {
     "attack": "15",
     "navigator": "4.9",
     "layer": "4.5"
   },
   "domain": "enterprise-attack",
-  "description": "MITRE ATT&CK techniques executed in the CASE-26 Sliver C2 adversary emulation lab against a Windows 11 Enterprise victim. Attacker: REMnux (192.168.93.137). Victim: Windows 11 Enterprise eval. C2: Sliver v1.7.7 HTTPS beacon.",
+  "description": "MITRE ATT&CK techniques executed in the CASE-24 Sliver C2 adversary emulation lab against a Windows 11 Enterprise victim. Attacker: REMnux (192.168.93.137). Victim: Windows 11 Enterprise eval. C2: Sliver v1.7.7 HTTPS beacon.",
   "filters": {
     "platforms": [
       "Windows"
@@ -28,11 +28,11 @@
       "techniqueID": "T1204.002",
       "tactic": "execution",
       "color": "#e60d0d",
-      "comment": "Victim executed CASE26-beacon.exe transferred from REMnux via HTTP/SMB. Sliver beacon compiled for windows/amd64 with symbol obfuscation enabled (4m11s build time).",
+      "comment": "Victim executed CASE24-beacon.exe transferred from REMnux via HTTP/SMB. Sliver beacon compiled for windows/amd64 with symbol obfuscation enabled (4m11s build time).",
       "enabled": true,
       "metadata": [
         { "name": "Tool", "value": "Sliver C2 v1.7.7" },
-        { "name": "Artifact", "value": "CASE26-beacon.exe" }
+        { "name": "Artifact", "value": "CASE24-beacon.exe" }
       ],
       "links": [],
       "showSubtechniques": true
@@ -129,11 +129,11 @@
   "legendItems": [
     {
       "color": "#e60d0d",
-      "label": "Executed in CASE-26 lab"
+      "label": "Executed in CASE-24 lab"
     }
   ],
   "metadata": [
-    { "name": "Project", "value": "CASE-26: Red Team C2 Lab" },
+    { "name": "Project", "value": "CASE-24: Red Team C2 Lab" },
     { "name": "Attacker", "value": "REMnux 192.168.93.137" },
     { "name": "Victim", "value": "Windows 11 Enterprise (eval)" },
     { "name": "C2 Framework", "value": "Sliver v1.7.7" },

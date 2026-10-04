@@ -1,4 +1,4 @@
-# CASE-26 Sigma Detection Rules
+# CASE-24 Sigma Detection Rules
 
 Three Sigma rules authored against own red team activity in the Sliver C2 adversary emulation lab.
 Tools: Sysmon (EventIDs 3, 10, 13) on Windows 11 Enterprise victim.
@@ -159,7 +159,7 @@ tags:
 
 ## Validation Notes
 
-These rules were authored against own red team activity in CASE-26.
+These rules were authored against own red team activity in CASE-24.
 After lab execution, validate each rule against:
 - Rule 1: Sysmon NetworkConnect logs during beacon check-in intervals
 - Rule 2: Sysmon RegistryEvent logs after persistence step (T1547.001)
